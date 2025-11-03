@@ -19,7 +19,7 @@ const PORT = 5000 || process.env.PORT;
 
 app.use(
   cors({
-    origin: ["http://smart-billing-psi.vercel.app"],
+    origin: ["https://smart-billing-psi.vercel.app"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
     credentials: true,
