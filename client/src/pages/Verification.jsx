@@ -79,7 +79,7 @@ const Verification = () => {
           code:otpValue
         })
         setUser(response.data.returningObj)
-        window.location.reload()
+        navigate("/startup")
       } catch (error) {
         console.log(error);
         
