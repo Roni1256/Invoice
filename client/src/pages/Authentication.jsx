@@ -87,7 +87,7 @@ const Authentication = () => {
         
         // Navigate after a short delay to show success message
         setTimeout(() => {
-          navigate('/startup');
+          navigate('/dashboard');
         }, 1000);
 
       } catch (error) {
