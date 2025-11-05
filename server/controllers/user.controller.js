@@ -74,18 +74,22 @@ export async function verification(req, res) {
 
     res.cookie("billingToken", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
-    const returningObj={
-      username:user.username,
-      email:user.email,
-      id:user._id
-    }
+    const returningObj = {
+      username: user.username,
+      email: user.email,
+      id: user._id,
+    };
     return res
       .status(201)
-      .json({ message: "User Created Successfully! Logged in successfully!",returningObj });
+      .json({
+        message: "User Created Successfully! Logged in successfully!",
+        returningObj,
+      });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -127,47 +131,51 @@ export async function getCurrentUser(req, res) {
       return res.status(401).json({ error: "User not found" });
     }
 
-    return res.status(200).json({message:"User retrieved",user})
+    return res.status(200).json({ message: "User retrieved", user });
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error",error });
+    return res.status(500).json({ message: "Internal Server Error", error });
   }
 }
-export async function login(req,res) {
+export async function login(req, res) {
   try {
-    
-    const {email,password}=req.body;
-    if(!email || !password) return res.status(401).json({message:"Missing Credentials"})
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(401).json({ message: "Missing Credentials" });
 
-    const user=await User.findOne({email:email})
-    if(!user){
-      return res.status(404).json({message:"User not found"});
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
     console.log(user);
-    
-    const isPasswordMatch=await bcrypt.compare(password,user.password);
-    if(!isPasswordMatch){
-      return res.status(401).json({message:"Password Mismatch"});
-    }console.log(isPasswordMatch);
-    
-    const returningObj={
-      email:user.email,
-      username:user.username,
-      id:user._id
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: "Password Mismatch" });
     }
-    const jwtToken=jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"30d"})
+    console.log(isPasswordMatch);
+
+    const returningObj = {
+      email: user.email,
+      username: user.username,
+      id: user._id,
+    };
+    const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
     console.log(jwtToken);
-    
-    res.cookie("billingToken",jwtToken,{
-     httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+
+    res.cookie("billingToken", jwtToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
       maxAge: 30 * 24 * 60 * 60 * 1000,
-    })
+      path: "/",
+    });
     console.log(jwtToken);
-    
-    return res.status(200).json({message:"Login success",returningObj})
+
+    return res.status(200).json({ message: "Login success", returningObj });
   } catch (error) {
-    return res.status(500).json({message:"Internal Server Error"})
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -175,8 +183,8 @@ export async function logout(req, res) {
   try {
     res.clearCookie("billingToken", {
       httpOnly: true,
-      secure: true, 
-      sameSite: "none", 
+      secure: true,
+      sameSite: "none",
     });
 
     return res.status(200).json({ message: "Logout successful!" });
@@ -185,10 +193,7 @@ export async function logout(req, res) {
   }
 }
 
-export async function forgotPassword(req,res){
+export async function forgotPassword(req, res) {
   try {
-    
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
